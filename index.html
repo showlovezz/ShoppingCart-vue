@@ -20,36 +20,14 @@
       <div class="col-md-8">
         <h1 class="page-header">VUEJS 實戰 - <small>5倍商城</small></h1>
 
-        <div class="item">
-          <h2>貓一隻</h2>
-          <img class="item-img img-responsive" src="http://via.placeholder.com/400x400" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-          <p class="item-price ">$ 100 </p>
-          <a class="btn btn-primary " href="# ">放入購物車 <span class="glyphicon glyphicon-chevron-right "></span></a>
-        </div>
-
-        <div class="item">
-          <h2>貓一隻</h2>
-          <img class="item-img img-responsive" src="http://via.placeholder.com/400x400" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-          <p class="item-price ">$ 100 </p>
-          <a class="btn btn-primary " href="# ">放入購物車 <span class="glyphicon glyphicon-chevron-right "></span></a>
-        </div>
-
-        <div class="item">
-          <h2>貓一隻</h2>
-          <img class="item-img img-responsive" src="http://via.placeholder.com/400x400" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-          <p class="item-price ">$ 100 </p>
-          <a class="btn btn-primary " href="# ">放入購物車 <span class="glyphicon glyphicon-chevron-right "></span></a>
-        </div>
-
-        <div class="item">
-          <h2>貓一隻</h2>
-          <img class="item-img img-responsive" src="http://via.placeholder.com/400x400" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-          <p class="item-price ">$ 100 </p>
-          <a class="btn btn-primary " href="# ">放入購物車 <span class="glyphicon glyphicon-chevron-right "></span></a>
+        <div v-for="item in filteredItems" :key="item._id" class="item">
+          <h2>{{ item.type }}: {{ item.name}}</h2>
+          <img class="item-img img-responsive" :src="item.picture" alt="">
+          <p>{{ item.info }}</p>
+          <p class="item-price ">$ {{ item.price}} </p>
+          <a class="btn btn-primary " href="# ">放入購物車 
+            <span class="glyphicon glyphicon-chevron-right"></span>
+          </a>
         </div>
 
         <hr>
@@ -85,8 +63,8 @@
 
         <div class="well ">
           <h4>商品搜尋</h4>
-          <div class="input-group ">
-            <input type="text" class="form-control">
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="searchName">
             <span class="input-group-btn">
                 <button class="btn btn-default"><span class="glyphicon glyphicon-search "></span></button>
             </span>
@@ -130,6 +108,30 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript">
+    new Vue({
+      el: '#cart-app',
+      data: {
+        items: [],
+        searchName: ''
+      },
+      created() {
+        axios.get('./pros-list.json')
+             .then((response) => {
+              this.items = response.data;
+             });
+      },
+      computed: {
+        filteredItems() {
+          var searchName = this.searchName;
+
+          return (this.searchName.trim() !== '') ?
+            this.items.filter(function(d) { return d.name.indexOf(searchName) > -1; }) :
+            this.items;
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>
